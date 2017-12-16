@@ -3,3 +3,4 @@ This is an idea I had for a game based on the prisoner's dilemma. In the Dilemma
 
 The game is repeated several rounds. In every round both players make an option and receive the points accordind to both choices. If a player makes 3 cooperations in a row, gets a reward of 3 points, and if makes 3 defections in a row gets a penalty of 5 points. Every 3 rewards or every 3 penalties the number of points added or removed is increased in 1. The game finishes when one player gets 10 or more points more than the other player, with a minimum of 50 points.
 
+The code for this game is Python 3.
