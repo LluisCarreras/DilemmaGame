@@ -6,8 +6,6 @@ Created on Tue Nov 15 17:40:39 2016
 """
 
 from random import randint, random
-from flask import Flask, render_template, request, jsonify
-
 
 class Player():
     ''' This class defines a player in the game
@@ -375,8 +373,7 @@ class Game():
         print("\n", who_wins_str)   
  
 
-# Play a game
-if __name__ == '__main__':           
+def play_a_game():           
     p0 = "A"
     p1 = "B"
     goal = 50
@@ -390,7 +387,11 @@ if __name__ == '__main__':
         
     game = Game(p0, p1, goal, offset, 
                 rounds_for_penalty, penalty, incr_penalty,
-                rounds_for_reward, reward, incr_reward)    
+                rounds_for_reward, reward, incr_reward)
+    
+    return game
+
+play_a_game()   
     
 
     
