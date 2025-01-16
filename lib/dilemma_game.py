@@ -189,30 +189,30 @@ class Game():
         '''
         
         # Set the points to add to both players
-        if self._player_0.get_election() == 0 and self._player_1.get_election() == 0:
-            # Both players defect
+        if self._player_0.get_election() == 1 and self._player_1.get_election() == 1:
+            # Both players cooperate
             self._player_0._points_to_add = self._payoff_both_cooperate
             self._player_1._points_to_add = self._payoff_both_cooperate
             message = "Both players cooperate."
-            summary = "- -"
-        elif self._player_0.get_election() == 0 and self._player_1.get_election() == 1:
-            # Player1 defects and player2 cooperates
-            self._player_0._points_to_add = self._payoff_who_cooperates
-            self._player_1._points_to_add = self._payoff_who_defects
-            message = "Only Player {0:s} cooperates.".format(self._player_1.get_name())
-            summary = "- X"
+            summary = "+ +"
         elif self._player_0.get_election() == 1 and self._player_1.get_election() == 0:
             # Player1 cooperates and player2 defects
+            self._player_0._points_to_add = self._payoff_who_cooperates
+            self._player_1._points_to_add = self._payoff_who_defects
+            message = "Only Player {0:s} cooperates.".format(self._player_0.get_name())
+            summary = "+ -"
+        elif self._player_0.get_election() == 0 and self._player_1.get_election() == 1:
+            # Player1 defects and player2 cooperates
             self._player_0._points_to_add = self._payoff_who_defects
             self._player_1._points_to_add = self._payoff_who_cooperates
-            message = "Only Player {0:s} cooperates.".format(self._player_0.get_name())
-            summary = "X -"
+            message = "Only Player {0:s} cooperates.".format(self._player_1.get_name())
+            summary = "- +"
         else:
-            # Both players cooperate
+            # Both players defect
             self._player_0._points_to_add = self._payoff_both_defect
             self._player_1._points_to_add = self._payoff_both_defect  
             message = "Both players defect.  "
-            summary = "X X"
+            summary = "- -"
         
         return message, summary
        
@@ -234,12 +234,13 @@ class Game():
             other = self._player_0
             
         if self._current_round <= 1:
-            return 0
+            return 1
         else:
-            if other._historic[self._current_round - 1] != -1:
-                return other._historic[self._current_round - 1]
-            else:
-               return other._historic[self._current_round - 2] 
+            return other._historic[self._current_round - 1]
+            # if other._historic[self._current_round - 1] != -1:
+            #     return other._historic[self._current_round - 1]
+            # else:
+            #    return other._historic[self._current_round - 2] 
         
     def maximum_outcome_strategy(self, player, rand=0.0):
         '''This strategy calculates the four possible outcomes in the next round and
@@ -382,25 +383,33 @@ class Game():
             who_wins_str = "THERE'S A DRAW!!!"
         print("\n", who_wins_str)   
 
-    def play_2(self):
-                
-        self._player_0.set_election(self.maximum_outcome_strategy(self._player_0, 0.3))
-        self._player_1.set_election(self.tit_for_tat_strategy(self._player_1))
+    def play_2(self, p0_election):
+
+        # Actualize variables
+        self._current_round += 1 
+
+        # Elections
+        p0_elect = p0_election
+        p1_elect = self.random_strategy(self._player_1)
+        # p1_elect = self.tit_for_tat_strategy(self._player_1)
+
+        #self._player_0.set_election(self.maximum_outcome_strategy(self._player_0, 0.3))
+        self._player_0.set_election(p0_elect)
+        self._player_1.set_election(p1_elect)
                                     
         # Insert the last elections in historic lists
-        for player in self._players:
-            player._historic.append(player.get_election())
+        self._player_0._historic.append(p0_elect)
+        self._player_1._historic.append(p1_elect)
             
         # Actualize the results
         message, summary = self.calculate_points()
         self.actualize(message, summary)
         self.set_message(message)
+
+        # return p1_elect
         
         # Penalizations and rewards
-        self.penalties_and_rewards(False)
-                            
-        # Actualize variables
-        self._current_round += 1
+        #self.penalties_and_rewards(False)
         
         # Show the winner              
         # if self._player_0.get_points() < self._player_1.get_points():

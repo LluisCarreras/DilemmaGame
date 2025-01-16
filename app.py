@@ -10,13 +10,14 @@ app = Flask(__name__)
 # p1_score = new_game._player_0.get_points()
 # p2_score = new_game._player_1.get_points()
 
-def create_json (message, the_turn, value_p1, value_p2, score_p1, score_p2):
+def create_json (message, the_turn, value_p1, value_p2, score_p1, score_p2, option_p2):
     return jsonify({'message': message,
                     'value_turn': the_turn,
                     'value_p1': value_p1,
                     'value_p2': value_p2,
                     'score_p1': score_p1,
-                    'score_p2': score_p2})
+                    'score_p2': score_p2,
+                    'option_p2': option_p2})
 
 @app.route('/')
 def index():
@@ -26,9 +27,9 @@ def index():
 def guess():
 
     global new_game
-    # global p1_score
-    # global p2_score
-    new_game.play_2()
+
+    does_cooperate = int(request.json['guess']) 
+    new_game.play_2(does_cooperate)
 
     message = new_game.get_message()
     turn = new_game.get_round()
@@ -36,10 +37,11 @@ def guess():
     p2_value = new_game._player_1.get_points_to_add()
     p1_score = new_game._player_0.get_points()
     p2_score = new_game._player_1.get_points()
+    p2_option =  new_game._player_1.get_election()
 
-    return create_json(message, turn, p1_value, p2_value, p1_score, p2_score)
+    return create_json(message, turn, p1_value, p2_value, p1_score, p2_score, p2_option)
 
-    # does_cooperate = int(request.json['guess'])  
+     
     # turn += 1 
     # if does_cooperate: 
     #     message = 'Cooperates!!!'

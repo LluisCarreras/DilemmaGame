@@ -31,6 +31,7 @@
             border: 1px solid black;
             padding: 8px;
             text-align: center;
+            font-weight: bold;
         }
         th {
             background-color: #f2f2f2;
@@ -63,7 +64,7 @@
     </table>
     <script>
         // Function to add a new row to the table
-        function addRow(turnValue, p1Value, p2Value, p1Score, p2Score) {
+        function addRow(turnValue, p1Value, p2Value, p1Score, p2Score, p1Option, p2Option) {
             const table = document.getElementById("player-table");
             const newRow = table.insertRow(1); // Insert row at the first position after the header
 
@@ -78,6 +79,30 @@
             cell_p2_value.textContent = p2Value;
             cell_p1_score.textContent = p1Score;
             cell_p2_score.textContent = p2Score;
+
+            if (p1Option === 1) {
+                cell_p1_value.style.backgroundColor = 'lightgreen';
+            } else if (p1Option === 0) {
+                cell_p1_value.style.backgroundColor = "rgb(255, 102, 102)";
+            }
+
+            if (p2Option === 1) {
+                cell_p2_value.style.backgroundColor = 'lightgreen';
+            } else if (p2Option === 0) {
+                cell_p2_value.style.backgroundColor = "rgb(255, 102, 102)";
+            }
+
+            if (p1Score === p2Score) {
+                cell_p1_score.style.backgroundColor = 'lightyellow';
+                cell_p2_score.style.backgroundColor = 'lightyellow';
+            } else if (p1Score > p2Score) {
+                cell_p1_score.style.backgroundColor = 'yellow';
+                cell_p2_score.style.backgroundColor = 'lightyellow';
+            } else {
+                cell_p1_score.style.backgroundColor = 'lightyellow';
+                cell_p2_score.style.backgroundColor = 'yellow';
+            }
+
         }
         async function makeTurn(doesCooperate) {
             const response = await fetch('/guess', {
@@ -93,8 +118,10 @@
             const value_p2 = result.value_p2;
             const score_p1 = result.score_p1;
             const score_p2 = result.score_p2;
+            const option_p1 = doesCooperate
+            const option_p2 = result.option_p2
             document.getElementById('message').textContent = message;
-            addRow(value_turn, value_p1, value_p2, score_p1, score_p2)
+            addRow(value_turn, value_p1, value_p2, score_p1, score_p2, option_p1, option_p2)
         }
     </script>
 </body>
