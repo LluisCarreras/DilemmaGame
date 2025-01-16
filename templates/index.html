@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Number Guessing Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Number Guessing Game</h1>
+    <p id="message">Guess the number between 1 and 100!</p>
+    <input type="number" id="guess" placeholder="Enter your guess">
+    <button onclick="makeGuess()">Submit</button>
+    <script>
+        async function makeGuess() {
+            const guessInput = document.getElementById('guess');
+            const guess = guessInput.value;
+
+            const response = await fetch('/guess', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ guess: guess })
+            });
+
+            const result = await response.json();
+            document.getElementById('message').textContent = result.message;
+            guessInput.value = '';
+        }
+    </script>
+</body>
+</html>
