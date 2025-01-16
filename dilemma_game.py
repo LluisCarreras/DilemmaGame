@@ -62,9 +62,10 @@ class Game():
     def __init__(self, p0, p1, goal=50, offset=0, 
                  rounds_for_penalty=3, penalty=5, incr_penalty=1, 
                  rounds_for_reward=3, reward=5, incr_reward=1):
-        self._players = [0, 0]
-        self._players[0] = Player(p0, 0)
-        self._players[1] = Player(p1, 0)
+        #self._players = [0, 0]
+        self._player_0 = Player(p0, 0)
+        self._player_1 = Player(p1, 0)
+        self._players = [self._player_0, self._player_1]
         self._goal = goal
         self._offset = offset
         self._rounds_for_penalty = rounds_for_penalty
@@ -78,9 +79,7 @@ class Game():
         self._payoff_who_defects = 5
         self._payoff_who_cooperates = 0
         self._current_round = 1
-        print(" ROUND | PLAYERS BEHAVIOUR\t\t| A B |   {0:s}    {1:s} |   {0:s}     {1:s} | CURRENT WINNER".format(
-                self._players[0].get_name(), self._players[1].get_name(),
-                self._players[0].get_name(), self._players[1].get_name()))
+        print(f" ROUND | PLAYERS BEHAVIOUR\t\t| A B |   {self._player_0.get_name()}    {self._player_1.get_name()} |   {self._player_0.get_name()}     {self._player_1.get_name()} | CURRENT WINNER")
         print("-" * 95) 
         print("     0 | The game begins...")
         self.play()
@@ -93,30 +92,30 @@ class Game():
         plural = "s"
         
         # Add points to both players
-        p0_add = self._players[0].get_points_to_add()
-        p1_add = self._players[1].get_points_to_add()
-        self._players[0].add_points(p0_add)
-        self._players[1].add_points(p1_add)
+        p0_add = self._player_0.get_points_to_add()
+        p1_add = self._player_1.get_points_to_add()
+        self._player_0.add_points(p0_add)
+        self._player_1.add_points(p1_add)
         
         # Get points from both players
-        p0_total = int(self._players[0].get_points())
-        p1_total = int(self._players[1].get_points())
+        p0_total = int(self._player_0.get_points())
+        p1_total = int(self._player_1.get_points())
         
         # Build message about who's winning
-        if self._players[0].get_points() == self._players[1].get_points():
-            whos_winning_str = "  Draw on {0:d} points".format(self._players[0].get_points())
-        elif self._players[0].get_points() > self._players[1].get_points():
-            diff = self._players[0].get_points() - self._players[1].get_points()
+        if self._player_0.get_points() == self._player_1.get_points():
+            whos_winning_str = "  Draw on {0:d} points".format(self._player_0.get_points())
+        elif self._player_0.get_points() > self._player_1.get_points():
+            diff = self._player_0.get_points() - self._player_1.get_points()
             if diff == 1:
                 plural = ""
             whos_winning_str = "Player {0:s} wins on {1:d} point{2:s}".format(
-                    self._players[0].get_name(), diff, plural)
+                    self._player_0.get_name(), diff, plural)
         else:
-            diff = self._players[1].get_points() - self._players[0].get_points()
+            diff = self._player_1.get_points() - self._player_0.get_points()
             if diff == 1:
                 plural = ""
             whos_winning_str = "    Player {0:s} wins on {1:d} point{2:s}".format(
-                        self._players[1].get_name(), diff, plural)
+                        self._player_1.get_name(), diff, plural)
             
         # Print message
         if show_round:
@@ -134,10 +133,10 @@ class Game():
         ''' Penalizes a player when doesn't collaborate several times in a row
         '''
         
-        if player == self._players[0]:
-            other = self._players[1]
+        if player == self._player_0:
+            other = self._player_1
         else:
-            other = self._players[0]
+            other = self._player_0
             
         player.increment_penalties()
         
@@ -159,10 +158,10 @@ class Game():
         ''' Rewards a player for collaborating several times in a row
         '''
         
-        if player == self._players[0]:
-            other = self._players[1]
+        if player == self._player_0:
+            other = self._player_1
         else:
-            other = self._players[0]
+            other = self._player_0
             
         player.increment_rewards()
         
@@ -181,28 +180,28 @@ class Game():
         '''
         
         # Set the points to add to both players
-        if self._players[0].get_election() == 0 and self._players[1].get_election() == 0:
+        if self._player_0.get_election() == 0 and self._player_1.get_election() == 0:
             # Both players defect
-            self._players[0]._points_to_add = self._payoff_both_cooperate
-            self._players[1]._points_to_add = self._payoff_both_cooperate
+            self._player_0._points_to_add = self._payoff_both_cooperate
+            self._player_1._points_to_add = self._payoff_both_cooperate
             message = "Both players cooperate."
             summary = "- -"
-        elif self._players[0].get_election() == 0 and self._players[1].get_election() == 1:
+        elif self._player_0.get_election() == 0 and self._player_1.get_election() == 1:
             # Player1 defects and player2 cooperates
-            self._players[0]._points_to_add = self._payoff_who_cooperates
-            self._players[1]._points_to_add = self._payoff_who_defects
-            message = "Only Player {0:s} cooperates.".format(self._players[1].get_name())
+            self._player_0._points_to_add = self._payoff_who_cooperates
+            self._player_1._points_to_add = self._payoff_who_defects
+            message = "Only Player {0:s} cooperates.".format(self._player_1.get_name())
             summary = "- X"
-        elif self._players[0].get_election() == 1 and self._players[1].get_election() == 0:
+        elif self._player_0.get_election() == 1 and self._player_1.get_election() == 0:
             # Player1 cooperates and player2 defects
-            self._players[0]._points_to_add = self._payoff_who_defects
-            self._players[1]._points_to_add = self._payoff_who_cooperates
-            message = "Only Player {0:s} cooperates.".format(self._players[0].get_name())
+            self._player_0._points_to_add = self._payoff_who_defects
+            self._player_1._points_to_add = self._payoff_who_cooperates
+            message = "Only Player {0:s} cooperates.".format(self._player_0.get_name())
             summary = "X -"
         else:
             # Both players cooperate
-            self._players[0]._points_to_add = self._payoff_both_defect
-            self._players[1]._points_to_add = self._payoff_both_defect  
+            self._player_0._points_to_add = self._payoff_both_defect
+            self._player_1._points_to_add = self._payoff_both_defect  
             message = "Both players defect.  "
             summary = "X X"
         
@@ -220,10 +219,10 @@ class Game():
         the option of the opponent in the former round.
         '''
     
-        if player == self._players[0]:
-            other = self._players[1]
+        if player == self._player_0:
+            other = self._player_1
         else:
-            other = self._players[0]
+            other = self._player_0
             
         if self._current_round <= 1:
             return 0
@@ -272,7 +271,7 @@ class Game():
         if random() <= rand:
             return randint(0, 1)
         else:
-            if player == self._players[0]:
+            if player == self._player_0:
                 idx_option = results_diff.index(max(results_diff))
                 if idx_option in (0, 1):
                     return 0
@@ -311,19 +310,19 @@ class Game():
         
         results = [0, 0, 0, 0]
 
-        if len(self._players[0]._historic) > 1:
-            if (self._players[0]._historic[-1] == self._players[0]._historic[-2]):
-                if(self._players[0]._historic[-1] == 0):
+        if len(self._player_0._historic) > 1:
+            if (self._player_0._historic[-1] == self._player_0._historic[-2]):
+                if(self._player_0._historic[-1] == 0):
                      results[0] = 1
-                elif(self._players[0]._historic[-1] == 1):
+                elif(self._player_0._historic[-1] == 1):
                     results[2] = 1
-            if (self._players[1]._historic[-1] == self._players[1]._historic[-2]):
-                if(self._players[1]._historic[-1] == 0):
+            if (self._player_1._historic[-1] == self._player_1._historic[-2]):
+                if(self._player_1._historic[-1] == 0):
                      results[1] = 1
-                elif(self._players[1]._historic[-1] == 1):
+                elif(self._player_1._historic[-1] == 1):
                     results[3] = 1   
-#        print(self._players[0]._historic)
-#        print(self._players[1]._historic)
+#        print(self._player_0._historic)
+#        print(self._player_1._historic)
 #        print(results)
         return results
 
@@ -333,23 +332,23 @@ class Game():
 #        current_round = 1
         
         # Iterate over the game
-        while (self._players[0].get_points() < self._goal and
-               self._players[1].get_points() < self._goal or
-               self._players[0].get_points() == self._players[1].get_points() or
-               abs(self._players[0].get_points() - self._players[1].get_points()) < self._offset):
+        while (self._player_0.get_points() < self._goal and
+               self._player_1.get_points() < self._goal or
+               self._player_0.get_points() == self._player_1.get_points() or
+               abs(self._player_0.get_points() - self._player_1.get_points()) < self._offset):
                    
             # Get random elections for both players 
-            self._players[0].set_election(self.random_strategy(self._players[0]))
-#            self._players[1].set_election(self.random_strategy(self._players[1]))
+            self._player_0.set_election(self.random_strategy(self._player_0))
+#            self._player_1.set_election(self.random_strategy(self._player_1))
 
             # Set maximum outcome strategy
-#            self._players[0].set_election(self.maximum_outcome_strategy(self._players[0], 0.3))
-#            self._players[1].set_election(self.maximum_outcome_strategy(self._players[1], 0.3))
+#            self._player_0.set_election(self.maximum_outcome_strategy(self._player_0, 0.3))
+#            self._player_1.set_election(self.maximum_outcome_strategy(self._player_1, 0.3))
 
 
             # Set tit for tat strategy
-#            self._players[0].set_election(self.tit_for_tat_strategy(self._players[0]))
-            self._players[1].set_election(self.tit_for_tat_strategy(self._players[1]))
+#            self._player_0.set_election(self.tit_for_tat_strategy(self._player_0))
+            self._player_1.set_election(self.tit_for_tat_strategy(self._player_1))
                                      
             # Insert the last elections in historic lists
             for player in self._players:
@@ -366,10 +365,10 @@ class Game():
             self._current_round += 1
         
         # Show the winner              
-        if self._players[0].get_points() < self._players[1].get_points():
-            who_wins_str = "PLAYER {0:s} WINS!!!".format(self._players[1].get_name())
-        elif self._players[0].get_points() > self._players[1].get_points():
-            who_wins_str = "PLAYER {0:s} WINS!!!".format(self._players[0].get_name())
+        if self._player_0.get_points() < self._player_1.get_points():
+            who_wins_str = "PLAYER {0:s} WINS!!!".format(self._player_1.get_name())
+        elif self._player_0.get_points() > self._player_1.get_points():
+            who_wins_str = "PLAYER {0:s} WINS!!!".format(self._player_0.get_name())
         else:
             who_wins_str = "THERE'S A DRAW!!!"
         print("\n", who_wins_str)   
