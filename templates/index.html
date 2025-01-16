@@ -51,11 +51,17 @@
     <table id="player-table">
         <thead>
             <tr>
+                <th></th>
+                <th colspan="2">Scores</th>
+                <th colspan="2">Totals</th>
+                <th></th>
+            </tr>
+            <tr>
                 <th>Turn</th>
-                <th>P1 value</th>
-                <th>P2 value</th>
-                <th>P1 score</th>
-                <th>P2 score</th>
+                <th>P1</th>
+                <th>P2</th>
+                <th>P1</th>
+                <th>P2</th>
                 <th>Diff</th>
             </tr>
         </thead>
@@ -67,7 +73,7 @@
         // Function to add a new row to the table
         function addRow(turnValue, p1Value, p2Value, p1Score, p2Score, p1Option, p2Option) {
             const table = document.getElementById("player-table");
-            const newRow = table.insertRow(1); // Insert row at the first position after the header
+            const newRow = table.insertRow(2); // Insert row at the first position after the header
 
             const cell_turn = newRow.insertCell(0);
             const cell_p1_value = newRow.insertCell(1);
