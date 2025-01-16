@@ -1,21 +1,22 @@
-import random
 from flask import Flask, render_template, request, jsonify
+from lib.dilemma_game import play_a_game
 
+
+new_game = play_a_game()
 
 app = Flask(__name__)
 
-# Generate the number to guess
-#number = random.randint(1, 100)
+# turn = new_game.get_round()
+# p1_score = new_game._player_0.get_points()
+# p2_score = new_game._player_1.get_points()
 
-turn = 0
-player1_score = 0
-player2_score = 0
-
-def create_json (message, turn, value_p1, value_p2):
+def create_json (message, the_turn, value_p1, value_p2, score_p1, score_p2):
     return jsonify({'message': message,
-                    'value_turn': turn,
-                    'value_player_1': value_p1,
-                    'value_player_2': value_p2})
+                    'value_turn': the_turn,
+                    'value_p1': value_p1,
+                    'value_p2': value_p2,
+                    'score_p1': score_p1,
+                    'score_p2': score_p2})
 
 @app.route('/')
 def index():
@@ -23,21 +24,37 @@ def index():
 
 @app.route('/guess', methods=['POST'])
 def guess():
-    global turn
-    global player1_score
-    global player2_score
-    does_cooperate = int(request.json['guess'])  
-    turn += 1 
-    if does_cooperate: 
-        message = 'Cooperates!!!'
-        value_p1 = 1
-        value_p2 = 0
-        return create_json(message, turn, value_p1, value_p2)
-    else:
-        message = 'Defects!'
-        value_p1 = 0
-        value_p2 = 1
-        return create_json(message, turn, value_p1, value_p2)
+
+    global new_game
+    # global p1_score
+    # global p2_score
+    new_game.play_2()
+
+    message = new_game.get_message()
+    turn = new_game.get_round()
+    p1_value = new_game._player_0.get_points_to_add()
+    p2_value = new_game._player_1.get_points_to_add()
+    p1_score = new_game._player_0.get_points()
+    p2_score = new_game._player_1.get_points()
+
+    return create_json(message, turn, p1_value, p2_value, p1_score, p2_score)
+
+    # does_cooperate = int(request.json['guess'])  
+    # turn += 1 
+    # if does_cooperate: 
+    #     message = 'Cooperates!!!'
+    #     p1_value = 1
+    #     p2_value = 0
+    #     p1_score += p1_value
+    #     p2_score += p2_value
+    #     return create_json(message, turn, p1_value, p2_value, p1_score, p2_score)
+    # else:
+    #     message = 'Defects!'
+    #     p1_value = 0
+    #     p2_value = 1
+    #     p1_score += p1_value
+    #     p2_score += p2_value
+    #     return create_json(message, turn, p1_value, p2_value, p1_score, p2_score)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

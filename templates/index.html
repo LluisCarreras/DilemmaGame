@@ -51,8 +51,10 @@
         <thead>
             <tr>
                 <th>Turn</th>
-                <th>Player 1</th>
-                <th>Player 2</th>
+                <th>P1 value</th>
+                <th>P2 value</th>
+                <th>P1 score</th>
+                <th>P2 score</th>
             </tr>
         </thead>
         <tbody>
@@ -61,17 +63,21 @@
     </table>
     <script>
         // Function to add a new row to the table
-        function addRow(turnValue, player1Value, player2Value) {
+        function addRow(turnValue, p1Value, p2Value, p1Score, p2Score) {
             const table = document.getElementById("player-table");
             const newRow = table.insertRow(1); // Insert row at the first position after the header
 
             const cell_turn = newRow.insertCell(0);
-            const cell_player_1 = newRow.insertCell(1);
-            const cell_player_2 = newRow.insertCell(2);
+            const cell_p1_value = newRow.insertCell(1);
+            const cell_p2_value = newRow.insertCell(2);
+            const cell_p1_score = newRow.insertCell(3);
+            const cell_p2_score = newRow.insertCell(4);
 
             cell_turn.textContent = turnValue;
-            cell_player_1.textContent = player1Value;
-            cell_player_2.textContent = player2Value;
+            cell_p1_value.textContent = p1Value;
+            cell_p2_value.textContent = p2Value;
+            cell_p1_score.textContent = p1Score;
+            cell_p2_score.textContent = p2Score;
         }
         async function makeTurn(doesCooperate) {
             const response = await fetch('/guess', {
@@ -83,10 +89,12 @@
             const result = await response.json();
             const message = result.message;
             const value_turn = result.value_turn;
-            const value_player_1 = result.value_player_1;
-            const value_player_2 = result.value_player_2;
+            const value_p1 = result.value_p1;
+            const value_p2 = result.value_p2;
+            const score_p1 = result.score_p1;
+            const score_p2 = result.score_p2;
             document.getElementById('message').textContent = message;
-            addRow(value_turn, value_player_1, value_player_2)
+            addRow(value_turn, value_p1, value_p2, score_p1, score_p2)
         }
     </script>
 </body>

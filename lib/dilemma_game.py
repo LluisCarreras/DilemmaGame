@@ -77,11 +77,21 @@ class Game():
         self._payoff_both_defect = 1
         self._payoff_who_defects = 5
         self._payoff_who_cooperates = 0
-        self._current_round = 1
+        self._current_round = 0
+        self._message = 'The game begins...'
         print(f" ROUND | PLAYERS BEHAVIOUR\t\t| A B |   {self._player_0.get_name()}    {self._player_1.get_name()} |   {self._player_0.get_name()}     {self._player_1.get_name()} | CURRENT WINNER")
         print("-" * 95) 
         print("     0 | The game begins...")
-        self.play()
+        # self.play_2()
+
+    def get_round(self):
+        return self._current_round
+    
+    def get_message(self):
+        return self._message
+    
+    def set_message(self, message):
+        self._message = message
         
     def actualize(self, message, summary, show_round=True):
         ''' Shows a message about wich player is wining
@@ -337,16 +347,16 @@ class Game():
                abs(self._player_0.get_points() - self._player_1.get_points()) < self._offset):
                    
             # Get random elections for both players 
-            self._player_0.set_election(self.random_strategy(self._player_0))
-#            self._player_1.set_election(self.random_strategy(self._player_1))
+            #self._player_0.set_election(self.random_strategy(self._player_0))
+            #self._player_1.set_election(self.random_strategy(self._player_1))
 
             # Set maximum outcome strategy
-#            self._player_0.set_election(self.maximum_outcome_strategy(self._player_0, 0.3))
-#            self._player_1.set_election(self.maximum_outcome_strategy(self._player_1, 0.3))
+            self._player_0.set_election(self.maximum_outcome_strategy(self._player_0, 0.3))
+            #self._player_1.set_election(self.maximum_outcome_strategy(self._player_1, 0.3))
 
 
             # Set tit for tat strategy
-#            self._player_0.set_election(self.tit_for_tat_strategy(self._player_0))
+            #self._player_0.set_election(self.tit_for_tat_strategy(self._player_0))
             self._player_1.set_election(self.tit_for_tat_strategy(self._player_1))
                                      
             # Insert the last elections in historic lists
@@ -371,6 +381,35 @@ class Game():
         else:
             who_wins_str = "THERE'S A DRAW!!!"
         print("\n", who_wins_str)   
+
+    def play_2(self):
+                
+        self._player_0.set_election(self.maximum_outcome_strategy(self._player_0, 0.3))
+        self._player_1.set_election(self.tit_for_tat_strategy(self._player_1))
+                                    
+        # Insert the last elections in historic lists
+        for player in self._players:
+            player._historic.append(player.get_election())
+            
+        # Actualize the results
+        message, summary = self.calculate_points()
+        self.actualize(message, summary)
+        self.set_message(message)
+        
+        # Penalizations and rewards
+        self.penalties_and_rewards(False)
+                            
+        # Actualize variables
+        self._current_round += 1
+        
+        # Show the winner              
+        # if self._player_0.get_points() < self._player_1.get_points():
+        #     who_wins_str = "PLAYER {0:s} WINS!!!".format(self._player_1.get_name())
+        # elif self._player_0.get_points() > self._player_1.get_points():
+        #     who_wins_str = "PLAYER {0:s} WINS!!!".format(self._player_0.get_name())
+        # else:
+        #     who_wins_str = "THERE'S A DRAW!!!"
+        # print("\n", who_wins_str)  
  
 
 def play_a_game():           
@@ -391,7 +430,7 @@ def play_a_game():
     
     return game
 
-play_a_game()   
+# play_a_game()   
     
 
     
