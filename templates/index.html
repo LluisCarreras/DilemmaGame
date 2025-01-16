@@ -14,27 +14,79 @@
             padding: 10px;
             margin: 5px;
         }
+        #cooperate_button {
+        background-color: green;
+        color: white; /* Text color inside the button */
+        }
+        #defect_button {
+            background-color: red;
+            color: white; /* Text color inside the button */
+        }
+        table {
+            max-width: 200px;
+            border-collapse: collapse;
+            margin: 0 auto;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
     </style>
 </head>
 <body>
-    <h1>Number Guessing Game</h1>
-    <p id="message">Guess the number between 1 and 100!</p>
-    <input type="number" id="guess" placeholder="Enter your guess">
-    <button onclick="makeGuess()">Submit</button>
-    <script>
-        async function makeGuess() {
-            const guessInput = document.getElementById('guess');
-            const guess = guessInput.value;
+    <h1>Dilemma...</h1>
+    <p id="message">Cooperate or defect?</p>
+    <div>
+        <!-- Buttons to trigger the action -->
+        <button id="cooperate_button" onclick="makeTurn(1)">Cooperate</button>
+        <button id="defect_button" onclick="makeTurn(0)">Defect</button>
+    </div>
 
+    <!-- Table to show player results -->
+    <table id="player-table">
+        <thead>
+            <tr>
+                <th>Turn</th>
+                <th>Player 1</th>
+                <th>Player 2</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- New rows will be inserted here -->
+        </tbody>
+    </table>
+    <script>
+        // Function to add a new row to the table
+        function addRow(turnValue, player1Value, player2Value) {
+            const table = document.getElementById("player-table");
+            const newRow = table.insertRow(1); // Insert row at the first position after the header
+
+            const cell_turn = newRow.insertCell(0);
+            const cell_player_1 = newRow.insertCell(1);
+            const cell_player_2 = newRow.insertCell(2);
+
+            cell_turn.textContent = turnValue;
+            cell_player_1.textContent = player1Value;
+            cell_player_2.textContent = player2Value;
+        }
+        async function makeTurn(doesCooperate) {
             const response = await fetch('/guess', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ guess: guess })
+                body: JSON.stringify({ guess: doesCooperate })
             });
 
             const result = await response.json();
-            document.getElementById('message').textContent = result.message;
-            guessInput.value = '';
+            const message = result.message;
+            const value_turn = result.value_turn;
+            const value_player_1 = result.value_player_1;
+            const value_player_2 = result.value_player_2;
+            document.getElementById('message').textContent = message;
+            addRow(value_turn, value_player_1, value_player_2)
         }
     </script>
 </body>
