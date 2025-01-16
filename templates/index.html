@@ -23,7 +23,7 @@
             color: white; /* Text color inside the button */
         }
         table {
-            max-width: 300px;
+            max-width: 400px;
             border-collapse: collapse;
             margin: 0 auto;
         }
@@ -56,6 +56,7 @@
                 <th>P2 value</th>
                 <th>P1 score</th>
                 <th>P2 score</th>
+                <th>Diff</th>
             </tr>
         </thead>
         <tbody>
@@ -73,12 +74,20 @@
             const cell_p2_value = newRow.insertCell(2);
             const cell_p1_score = newRow.insertCell(3);
             const cell_p2_score = newRow.insertCell(4);
+            const cell_diff = newRow.insertCell(5);
 
             cell_turn.textContent = turnValue;
             cell_p1_value.textContent = p1Value;
             cell_p2_value.textContent = p2Value;
             cell_p1_score.textContent = p1Score;
             cell_p2_score.textContent = p2Score;
+            cell_diff.textContent = p1Score - p2Score;
+
+            if (p1Score < 50 && p2Score < 50) {
+                cell_turn.style.color = 'red';
+            } else {
+                cell_turn.style.color = 'green';
+            }
 
             if (p1Option === 1) {
                 cell_p1_value.style.backgroundColor = 'lightgreen';
@@ -101,6 +110,20 @@
             } else {
                 cell_p1_score.style.backgroundColor = 'lightyellow';
                 cell_p2_score.style.backgroundColor = 'yellow';
+            }
+
+            if (p1Score === p2Score) {
+                cell_diff.style.backgroundColor = "rgb(255, 255, 255)";
+            } else if (p1Score > p2Score) {
+                const diff = p1Score - p2Score;
+                const color_level = Math.min((10 - diff) * 25.5, 255);
+                const color = `rgb(${color_level}, 255, ${color_level})`;
+                cell_diff.style.backgroundColor = color;
+            } else {
+                const diff = p2Score - p1Score;
+                const color_level = Math.min((10 - diff) * 25.5, 255);
+                const color = `rgb(255, ${color_level}, ${color_level})`;
+                cell_diff.style.backgroundColor = color;
             }
 
         }

@@ -73,9 +73,9 @@ class Game():
         self._rounds_for_reward = rounds_for_reward
         self._reward = reward
         self._incr_reward = incr_reward
-        self._payoff_both_cooperate = 3
+        self._payoff_both_cooperate = 2 #3
         self._payoff_both_defect = 1
-        self._payoff_who_defects = 5
+        self._payoff_who_defects = 3 #5
         self._payoff_who_cooperates = 0
         self._current_round = 0
         self._message = 'The game begins...'
