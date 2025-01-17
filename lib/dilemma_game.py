@@ -317,24 +317,22 @@ class Game():
     def dummy_penalties_and_rewards(self):  
         ''' Calculate the feasible penalizations and rewards
         '''
-        
-        results = [0, 0, 0, 0]
+        penalties_and_rewards = {'p0_penalty': 0,
+                                 'p0_reward': 0,
+                                 'p1_penalty': 0,
+                                 'p1_reward': 0}
 
-        if len(self._player_0._historic) > 1:
-            if (self._player_0._historic[-1] == self._player_0._historic[-2]):
-                if(self._player_0._historic[-1] == 0):
-                     results[0] = 1
-                elif(self._player_0._historic[-1] == 1):
-                    results[2] = 1
-            if (self._player_1._historic[-1] == self._player_1._historic[-2]):
-                if(self._player_1._historic[-1] == 0):
-                     results[1] = 1
-                elif(self._player_1._historic[-1] == 1):
-                    results[3] = 1   
-#        print(self._player_0._historic)
-#        print(self._player_1._historic)
-#        print(results)
-        return results
+        if len(self._player_0._historic) > 2:
+            if self._player_0._historic[-3:] == [0, 0, 0]:
+                penalties_and_rewards['p0_penalty'] = 1
+            elif self._player_0._historic[-3:] == [1, 1, 1]:
+                    penalties_and_rewards['p0_reward'] = 1
+            if self._player_1._historic[-3:] == [0, 0, 0]:
+                     penalties_and_rewards['p1_penalty'] = 1
+            elif self._player_1._historic[-3:] == [1, 1, 1]:
+                    penalties_and_rewards['p1_reward'] = 1  
+#        
+        return penalties_and_rewards
 
     def play(self):
         
@@ -409,7 +407,7 @@ class Game():
         # return p1_elect
         
         # Penalizations and rewards
-        #self.penalties_and_rewards(False)
+        self.dummy_penalties_and_rewards()
         
         # Show the winner              
         # if self._player_0.get_points() < self._player_1.get_points():
