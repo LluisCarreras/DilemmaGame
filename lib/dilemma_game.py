@@ -293,28 +293,9 @@ class Game():
                     return 0
                 else:
                     return 1
-    
-    def penalties_and_rewards(self, strategy=False):   
-        ''' Calculate the feasible penalizations and rewards
-        '''
-        
-        results = []
-        functions = [self.reward, self.penalize]
-        for f in (0, 1):
-            for p in (0, 1):
-                if (self._players[p]._historic[-1] == f and
-                        self._players[p]._historic[-1] == self._players[p]._historic[-2] and
-                        self._players[p]._historic[-1] == self._players[p]._historic[-3]):                    
-                    results.append(1)
-                    if strategy == False:
-                        functions[f](self._players[p])
-                else:
-                    results.append(0)
-        if strategy:
-#             print(results)
-             return results
+
              
-    def dummy_penalties_and_rewards(self):  
+    def penalties_and_rewards(self):  
         ''' Calculate the feasible penalizations and rewards
         '''
         penalties_and_rewards = {'p0_penalty': 0,
@@ -407,7 +388,8 @@ class Game():
         # return p1_elect
         
         # Penalizations and rewards
-        self.dummy_penalties_and_rewards()
+        penalties_and_rewards = self.penalties_and_rewards()
+        print(penalties_and_rewards)
         
         # Show the winner              
         # if self._player_0.get_points() < self._player_1.get_points():

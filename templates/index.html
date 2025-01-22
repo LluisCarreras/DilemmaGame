@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask Number Guessing Game</title>
+    <title>Dilemma Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -57,7 +57,7 @@
                 <th></th>
             </tr>
             <tr>
-                <th>Turn</th>
+                <th>Round</th>
                 <th>P1</th>
                 <th>P2</th>
                 <th>P1</th>
@@ -151,6 +151,20 @@
             const option_p2 = result.option_p2
             document.getElementById('message').textContent = message;
             addRow(value_turn, value_p1, value_p2, score_p1, score_p2, option_p1, option_p2)
+
+            if ((score_p1 >= 50 || score_p2 >= 50) && score_p1 - score_p2 >= 10) {
+                document.getElementById('message').textContent = "PLAYER 1 WINS !!!";
+                disable_buttons();
+            } else if ((score_p1 >= 50 || score_p2 >= 50) && score_p2 - score_p1 >= 10) {
+                document.getElementById('message').textContent = "PLAYER 2 WINS !!!";
+                disable_buttons();
+            }
+        }
+        function disable_buttons() {
+            const cooperate_button = document.getElementById('cooperate_button');
+            const defect_button = document.getElementById('defect_button');
+            cooperate_button.disabled = true;
+            defect_button.disabled = true;
         }
     </script>
 </body>
